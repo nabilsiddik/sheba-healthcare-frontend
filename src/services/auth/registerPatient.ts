@@ -1,5 +1,6 @@
 'use server'
 import z from 'zod'
+import { userLogin } from './userLogin';
 
 const createPatientValidationSchema = z.object({
     password: z.string().nonempty('Password is required'),
@@ -63,11 +64,26 @@ export const registerPatient = async (_currentState: any, formData: any) => {
             method: 'POST',
             body: newFormData
         })
-            .then(res => res.json())
 
-        return res
+        const result = await res.json()
+
+        if (result.success) {
+            try {
+                await userLogin(_currentState, formData)
+            } catch (err: any) {
+                if (err?.digest?.startsWith('NEXT_REDIRECT')) {
+                    throw err
+                }
+                console.log('Error during auto login redirect', err)
+            }
+        }
+
+        return result
 
     } catch (err: any) {
+        if (err?.digest?.startsWith('NEXT_REDIRECT')) {
+            throw err
+        }
         console.log('Error while registering patient', err)
         return { error: 'Registration failed' }
     }

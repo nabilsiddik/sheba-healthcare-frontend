@@ -1,83 +1,60 @@
 import { NextResponse, NextRequest } from 'next/server'
- 
-type UserRole = 'ADMIN' | 'DOCTOR' | 'PATIENT'
-type RouteConfig = {
-  exact: string[],
-  patterns: RegExp[]
-}
+import jwt, { JwtPayload } from 'jsonwebtoken'
+import { getDefaultDashboardRoute, getRouteOwner, isAuthRoute, UserRole } from './utils/authUtils'
+import { deleteCookie, getCookie } from './utils/tokenHandler'
 
-// Exact and pattern routes for auth, common routes and role based routes
-const authRoutes = ['/login', '/signup', '/forgot-password', '/reset-password']
-const commonProtectedRoutes: RouteConfig = {
-  exact: ['/my-profile', '/settings'],
-  patterns: []
-}
-const doctorProtectedRoutes: RouteConfig = {
-  exact: [],
-  patterns: [/^\/doctor/, /^\/appointments/]
-}
-const adminProtectedRoutes: RouteConfig = {
-  exact: [],
-  patterns: [/^\/admin/]
-}
-const patientProtectedRoutes: RouteConfig = {
-  exact: [],
-  patterns: [/^\/dashboard/]
-}
+export async function proxy(request: NextRequest) {
+  let userRole: UserRole | null = null
+  const pathName = request.nextUrl.pathname
+  const accessToken = await getCookie('accessToken') || null
+  const routerOwner = getRouteOwner(pathName)
 
+  if (accessToken) {
+    const verifiedToken: JwtPayload | string = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET as string)
 
-// Check if current route is an auth route
-const isAuthRoute = (pathName: string): boolean => {
-  return authRoutes.some((route: string) => route === pathName)
-}
+    if (typeof verifiedToken === 'string') {
+      await deleteCookie('accessToken')
+      await deleteCookie('refreshToken')
+      return NextResponse.redirect(new URL('/login', request.url))
+    }
 
-// Check if any exact or pattern route matches with current path
-const isRouteMatches = (pathName: string, routes: RouteConfig): boolean => {
-  if(routes.exact.includes(pathName)){
-    return true
+    userRole = verifiedToken.role
   }
-  return routes.patterns.some((pattern: RegExp) => pattern.test(pathName))
-}
+
+  // If loged in user tried to access auth routes
+  const isAuth = isAuthRoute(pathName)
+  if (accessToken && isAuth) {
+    return NextResponse.redirect(new URL(getDefaultDashboardRoute(userRole as UserRole), request.url))
+  }
+
+  // User is trying to access open public route
+  if (routerOwner === null) {
+    return NextResponse.next()
+  }
+
+  if (!accessToken) {
+    const loginUrl = new URL('/login', request.url)
+    loginUrl.searchParams.set('redirect', pathName)
+    return NextResponse.redirect(loginUrl)
+  }
+
+  // User is trying to access common protencted routes
+  if (routerOwner === 'COMMON') {
+    return NextResponse.next()
+  }
 
 
-// Get route owner
-const getRouteOwner = (pathName: string): 'ADMIN' | 'PATIENT' | 'DOCTOR' | 'COMMON' | null => {
-  if(isRouteMatches(pathName, adminProtectedRoutes)){
-    return 'ADMIN'
+  // Admin Doctor and Patient access to trying protected routes
+  if (routerOwner === 'ADMIN' || routerOwner === 'DOCTOR' || routerOwner === 'PATIENT') {
+    if(userRole !== routerOwner){
+      return NextResponse.redirect(new URL(getDefaultDashboardRoute(userRole as UserRole), request.url))
+    }
+    return NextResponse.next()
   }
-  if(isRouteMatches(pathName, doctorProtectedRoutes)){
-    return 'DOCTOR'
-  }
-  if(isRouteMatches(pathName, patientProtectedRoutes)){
-    return 'PATIENT'
-  }
-  if(isRouteMatches(pathName, commonProtectedRoutes)){
-    return 'COMMON'
-  }
-  return null
-}
 
-
-// Get default role based dashboard redirect route after login
-const getDefaultDashboardRoute = (role: UserRole): string => {
-  if(role === 'ADMIN'){
-    return 'admin/dashboard'
-  }
-  if(role === 'DOCTOR'){
-    return 'doctor/dashboard'
-  }
-  if(role === 'PATIENT'){
-    return '/dashboard'
-  }
-  return '/'
-}
-
-
-export function proxy(request: NextRequest) {
-  console.log(request.nextUrl.pathname, 'path namee')
   return NextResponse.next()
 }
- 
+
 export const config = {
   matcher: [
     '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',

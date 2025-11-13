@@ -11,10 +11,11 @@ import {
 import { Input } from "@/components/ui/input"
 import { FcGoogle } from "react-icons/fc";
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { registerPatient } from "@/services/auth/registerPatient";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 import { getFieldError } from "@/utils/getFieldError"
+import { toast } from "sonner"
 
 export function SignupForm({
   className,
@@ -23,7 +24,11 @@ export function SignupForm({
 
   const [state, formAction, isPending] = useActionState(registerPatient, null)
 
-  console.log('signup state', state)
+  useEffect(() => {
+    if (state && !state.success && state.message) {
+      toast.error(state.message)
+    }
+  }, [state])
 
   return (
     <form action={formAction} className={cn("flex flex-col gap-6", className)} {...props}>

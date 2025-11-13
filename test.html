@@ -1,0 +1,33 @@
+<div id="my-fotm-container">
+    <div style="display: flex; align-items: center; gap: 10px">
+        <div style="width: 50%;">
+            [text* your-name placeholder "Your Full Name"]
+        </div>
+        <div style="width: 50%;">
+            [email* email autocomplete:email class:email-field placeholder "Your Email"]
+        </div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 10px">
+        <div style="width: 50%;">
+            [text* location class:location placeholder "Location"]
+        </div>
+        <div style="width: 50%;">
+            [date* date]
+        </div>
+    </div>
+
+    <div style="width: 100%;">
+        [select* event first_as_label "Select Event Type" "Standard Comedy Night" "Scholar-in-Residence Weekend"
+        "Corporate
+        Event" "The Spirituality of Laughter" "Private Party" "Comedy Club" "Fundraising Event" "Other"]
+    </div>
+
+    <div style="width: 100%;">
+        [textarea details placeholder] Tell us about your event, expected audience size, venue details, etc. [/textarea]
+    </div>
+
+    <div style="width: 100%;">
+        [submit "Send Booking Request"]
+    </div>
+</div>
