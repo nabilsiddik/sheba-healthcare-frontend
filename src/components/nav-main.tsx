@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronRight } from "lucide-react"
+import { ChevronRight, User } from "lucide-react"
 
 import {
   Collapsible,
@@ -19,18 +19,21 @@ import {
 import { IUserInfo } from "@/types/user.types"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { getIconComponent } from "@/lib/iconMapper"
+import { JSX } from "react"
 
 
 interface INavItems {
   title: string,
-  icon: React.ReactElement,
+  icon: JSX.Element,
   isActive: boolean,
   items: INavItem[]
 }
 
 interface INavItem {
   title: string,
-  url: string
+  url: string,
+  icon: JSX.Element
 }
 
 type NavMainProps = {
@@ -57,8 +60,8 @@ export function NavMain({ adminNavItems, doctorNavItems, patientNavItems, userIn
   return (
     <SidebarGroup className="mt-5">
       <SidebarMenu>
-        {navItems && navItems.length > 0 && navItems.map((item) => (
-          <Collapsible
+        {navItems && navItems.length > 0 && navItems.map((item) => {
+          return <Collapsible
             key={item.title}
             asChild
             defaultOpen={item.isActive}
@@ -67,7 +70,7 @@ export function NavMain({ adminNavItems, doctorNavItems, patientNavItems, userIn
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton className="cursor-pointer font-medium text-gray-700 text-md" tooltip={item.title}>
-                  {item.icon && item.icon}
+                  {item?.icon}
                   <span>{item.title}</span>
                   <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                 </SidebarMenuButton>
@@ -78,6 +81,7 @@ export function NavMain({ adminNavItems, doctorNavItems, patientNavItems, userIn
                     <SidebarMenuSubItem id="sidebarMenuSubItem" key={subItem.title}>
                       <SidebarMenuSubButton asChild>
                         <Link className={`${subItem.url === pathName && 'bg-primary'} rounded-md py-5 px-3 font-medium`} href={subItem.url}>
+                          {subItem?.icon}
                           {subItem.title}
                         </Link>
                       </SidebarMenuSubButton>
@@ -87,7 +91,7 @@ export function NavMain({ adminNavItems, doctorNavItems, patientNavItems, userIn
               </CollapsibleContent>
             </SidebarMenuItem>
           </Collapsible>
-        ))}
+        })}
       </SidebarMenu>
     </SidebarGroup>
   )

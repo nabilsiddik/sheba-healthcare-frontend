@@ -11,6 +11,7 @@ import {
 import { IUserInfo } from "@/types/user.types";
 import { FaUserDoctor } from "react-icons/fa6";
 import { FaBedPulse } from "react-icons/fa6";
+import { BriefcaseMedical, CalendarClock, Hospital, ListCheck, NotebookPen, PersonStanding, SquareActivity, Stethoscope, User } from "lucide-react";
 
 // This is sample data.
 const data = {
@@ -22,157 +23,137 @@ const data = {
   adminNavItems: [
     {
       title: "User Management",
-      icon: <FaRegUser />,
+      icon: <User/>,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "/admin/dashboard/history",
+          title: "Admins",
+          url: "/admin/dashboard/admins",
+          icon: <PersonStanding/>
         },
         {
-          title: "Starred",
-          url: "/admin/dashboard/starred",
+          title: "Doctors",
+          url: "/admin/dashboard/doctors",
+          icon: <Stethoscope/>
         },
         {
-          title: "Settings",
-          url: "/admin/dashboard/settings",
-        },
-      ],
-    },
-    {
-      title: "Doctor Management",
-      icon: <FaUserDoctor />,
-      isActive: false,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
+          title: "Patients",
+          url: "/admin/dashboard/patients",
+          icon: <SquareActivity/>
         },
       ],
     },
     {
-      title: "Patient Management",
-      icon: <FaBedPulse />,
+      title: "Hospital Management",
+      icon: <Hospital/>,
       isActive: false,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Appointments",
+          url: "/admin/dashboard/appointments",
+          icon: <NotebookPen/>
         },
         {
-          title: "Starred",
-          url: "#",
+          title: "Schedules",
+          url: "/admin/dashboard/schedules",
+          icon: <CalendarClock/>
         },
         {
-          title: "Settings",
-          url: "#",
+          title: "Specialties",
+          url: "/admin/dashboard/specialties",
+          icon: <ListCheck/>
         },
       ],
     }
   ],
   doctorNavItems: [
     {
-      title: "Patient Management",
-      icon: <FaRegUser />,
+      title: "User Management",
+      icon: <User/>,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Admins",
+          url: "/admin/dashboard/admins",
+          icon: <PersonStanding/>
         },
         {
-          title: "Starred",
-          url: "#",
+          title: "Doctors",
+          url: "/admin/dashboard/doctors",
+          icon: <Stethoscope/>
         },
         {
-          title: "Settings",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Schedule Management",
-      icon: <FaRegUser />,
-      isActive: false,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
+          title: "Patients",
+          url: "/admin/dashboard/patients",
+          icon: <SquareActivity/>
         },
       ],
     },
     {
-      title: "Appointment Management",
-      icon: <FaRegUser />,
+      title: "Hospital Management",
+      icon: <Hospital/>,
       isActive: false,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Appointments",
+          url: "/admin/dashboard/appointments",
+          icon: <NotebookPen/>
         },
         {
-          title: "Starred",
-          url: "#",
+          title: "Schedules",
+          url: "/admin/dashboard/schedules",
+          icon: <CalendarClock/>
         },
         {
-          title: "Settings",
-          url: "#",
+          title: "Specialties",
+          url: "/admin/dashboard/specialties",
+          icon: <ListCheck/>
         },
       ],
     }
   ],
   patientNavItems: [
     {
-      title: "Appointments",
-      icon: <FaRegUser />,
+      title: "User Management",
+      icon: <User/>,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Admins",
+          url: "/admin/dashboard/admins",
+          icon: <PersonStanding/>
         },
         {
-          title: "Starred",
-          url: "#",
+          title: "Doctors",
+          url: "/admin/dashboard/doctors",
+          icon: <Stethoscope/>
         },
         {
-          title: "Settings",
-          url: "#",
+          title: "Patients",
+          url: "/admin/dashboard/patients",
+          icon: <SquareActivity/>
         },
       ],
     },
     {
-      title: "Prescriptions",
-      icon: <FaRegUser />,
+      title: "Hospital Management",
+      icon: <Hospital/>,
       isActive: false,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Appointments",
+          url: "/admin/dashboard/appointments",
+          icon: <NotebookPen/>
         },
         {
-          title: "Starred",
-          url: "#",
+          title: "Schedules",
+          url: "/admin/dashboard/schedules",
+          icon: <CalendarClock/>
         },
         {
-          title: "Settings",
-          url: "#",
+          title: "Specialties",
+          url: "/admin/dashboard/specialties",
+          icon: <ListCheck/>
         },
       ],
     }
