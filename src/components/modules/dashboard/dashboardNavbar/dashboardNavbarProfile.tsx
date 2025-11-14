@@ -15,6 +15,8 @@ import { FaRegUserCircle } from "react-icons/fa";
 import { MdOutlinePassword } from "react-icons/md";
 import Link from "next/link";
 import Image from "next/image";
+import { getUserInfo } from "@/services/auth/getUserInfo";
+import LogoutButton from "@/components/shared/LogoutButton";
 
 interface IDropdownMenu {
     title: string,
@@ -22,7 +24,9 @@ interface IDropdownMenu {
     icon: React.ReactElement
 }
 
-const DashboardNavbarProfile = () => {
+const DashboardNavbarProfile = async() => {
+
+    const user = await getUserInfo()
 
     const dropdownMenuList = [
         {
@@ -32,7 +36,7 @@ const DashboardNavbarProfile = () => {
         },
         {
             title: 'Change Password',
-            link: '/profile',
+            link: '/change-password',
             icon: <MdOutlinePassword />
         }
     ]
@@ -46,26 +50,30 @@ const DashboardNavbarProfile = () => {
             <div>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Image src={'/assets/images/profile/user.png'} className='rounded-full cursor-pointer' width={30} height={30} alt="dashboard profile photo"/>
+                        <Image src={'/assets/images/profile/user.png'} className='rounded-full cursor-pointer' width={30} height={30} alt="dashboard profile photo" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56" align="start">
                         <DropdownMenuLabel className="text-lg">My Account</DropdownMenuLabel>
                         <DropdownMenuGroup>
+                            <DropdownMenuItem className="flex flex-col text-left items-start gap-0">
+                                <h4 className="font-bold text-lg">Hi, {"Nabil Siddik"}</h4>
+                                <p className="text-md font-medium">{user?.email}</p>
+                            </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuGroup>
                             {dropdownMenuList.length > 0 && dropdownMenuList.map((item: IDropdownMenu, index: number) => {
                                 return <Link href={item?.link} key={index} className="cursor-pointer">
-                                    <DropdownMenuItem>
-                                    {item?.title}
-                                    <DropdownMenuShortcut>{item?.icon}</DropdownMenuShortcut>
-                                </DropdownMenuItem>
+                                    <DropdownMenuItem className="cursor-pointer">
+                                        {item?.title}
+                                        <DropdownMenuShortcut>{item?.icon}</DropdownMenuShortcut>
+                                    </DropdownMenuItem>
                                 </Link>
                             })}
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem className="bg-transparent">
-                            <Button className="w-full cursor-pointer">
-                                Log out
-                                <LuLogOut />
-                            </Button>
+                            <LogoutButton/>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

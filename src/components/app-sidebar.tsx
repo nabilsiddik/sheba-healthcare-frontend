@@ -1,30 +1,16 @@
 "use client"
-
-import * as React from "react"
-import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
-} from "lucide-react"
-
+import { FaRegUser } from "react-icons/fa";
 import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { IUserInfo } from "@/types/user.types";
+import { FaUserDoctor } from "react-icons/fa6";
+import { FaBedPulse } from "react-icons/fa6";
 
 // This is sample data.
 const data = {
@@ -33,28 +19,69 @@ const data = {
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  teams: [
+  adminNavItems: [
     {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
+      title: "User Management",
+      icon: <FaRegUser />,
+      isActive: true,
+      items: [
+        {
+          title: "History",
+          url: "/admin/dashboard/history",
+        },
+        {
+          title: "Starred",
+          url: "/admin/dashboard/starred",
+        },
+        {
+          title: "Settings",
+          url: "/admin/dashboard/settings",
+        },
+      ],
     },
     {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
+      title: "Doctor Management",
+      icon: <FaUserDoctor />,
+      isActive: false,
+      items: [
+        {
+          title: "History",
+          url: "#",
+        },
+        {
+          title: "Starred",
+          url: "#",
+        },
+        {
+          title: "Settings",
+          url: "#",
+        },
+      ],
     },
     {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
+      title: "Patient Management",
+      icon: <FaBedPulse />,
+      isActive: false,
+      items: [
+        {
+          title: "History",
+          url: "#",
+        },
+        {
+          title: "Starred",
+          url: "#",
+        },
+        {
+          title: "Settings",
+          url: "#",
+        },
+      ],
+    }
   ],
-  navMain: [
+  doctorNavItems: [
     {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
+      title: "Patient Management",
+      icon: <FaRegUser />,
       isActive: true,
       items: [
         {
@@ -72,99 +99,95 @@ const data = {
       ],
     },
     {
-      title: "Models",
-      url: "#",
-      icon: Bot,
+      title: "Schedule Management",
+      icon: <FaRegUser />,
+      isActive: false,
       items: [
         {
-          title: "Genesis",
+          title: "History",
           url: "#",
         },
         {
-          title: "Explorer",
+          title: "Starred",
           url: "#",
         },
         {
-          title: "Quantum",
+          title: "Settings",
           url: "#",
         },
       ],
     },
     {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
+      title: "Appointment Management",
+      icon: <FaRegUser />,
+      isActive: false,
       items: [
         {
-          title: "Introduction",
+          title: "History",
           url: "#",
         },
         {
-          title: "Get Started",
+          title: "Starred",
           url: "#",
         },
         {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
+          title: "Settings",
           url: "#",
         },
       ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
+    }
   ],
-  projects: [
+  patientNavItems: [
     {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
+      title: "Appointments",
+      icon: <FaRegUser />,
+      isActive: true,
+      items: [
+        {
+          title: "History",
+          url: "#",
+        },
+        {
+          title: "Starred",
+          url: "#",
+        },
+        {
+          title: "Settings",
+          url: "#",
+        },
+      ],
     },
     {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
+      title: "Prescriptions",
+      icon: <FaRegUser />,
+      isActive: false,
+      items: [
+        {
+          title: "History",
+          url: "#",
+        },
+        {
+          title: "Starred",
+          url: "#",
+        },
+        {
+          title: "Settings",
+          url: "#",
+        },
+      ],
+    }
   ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
+  userInfo: IUserInfo
+}
+
+export function AppSidebar({ userInfo, ...props }: AppSidebarProps) {
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
-      </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavMain adminNavItems={data.adminNavItems} doctorNavItems={data.doctorNavItems} patientNavItems={data.patientNavItems} userInfo={userInfo} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />

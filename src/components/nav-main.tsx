@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronRight, type LucideIcon } from "lucide-react"
+import { ChevronRight } from "lucide-react"
 
 import {
   Collapsible,
@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/collapsible"
 import {
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -17,26 +16,48 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
+import { IUserInfo } from "@/types/user.types"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 
-export function NavMain({
-  items,
-}: {
-  items: {
-    title: string
-    url: string
-    icon?: LucideIcon
-    isActive?: boolean
-    items?: {
-      title: string
-      url: string
-    }[]
-  }[]
-}) {
+
+interface INavItems {
+  title: string,
+  icon: React.ReactElement,
+  isActive: boolean,
+  items: INavItem[]
+}
+
+interface INavItem {
+  title: string,
+  url: string
+}
+
+type NavMainProps = {
+  adminNavItems: INavItems[]
+  doctorNavItems: INavItems[]
+  patientNavItems: INavItems[]
+  userInfo: IUserInfo
+}
+
+
+export function NavMain({ adminNavItems, doctorNavItems, patientNavItems, userInfo }: NavMainProps) {
+  const pathName = usePathname()
+  console.log(pathName)
+  let navItems: INavItems[] | null = null
+
+  if (userInfo.role === 'ADMIN') {
+    navItems = adminNavItems
+  } else if (userInfo.role === 'DOCTOR') {
+    navItems = doctorNavItems
+  } else if (userInfo.role === 'PATIENT') {
+    navItems = patientNavItems
+  }
+
   return (
-    <SidebarGroup>
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
+    <SidebarGroup className="mt-5">
       <SidebarMenu>
-        {items.map((item) => (
+        {navItems && navItems.length > 0 && navItems.map((item) => (
           <Collapsible
             key={item.title}
             asChild
@@ -45,8 +66,8 @@ export function NavMain({
           >
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={item.title}>
-                  {item.icon && <item.icon />}
+                <SidebarMenuButton className="cursor-pointer font-medium text-gray-700 text-md" tooltip={item.title}>
+                  {item.icon && item.icon}
                   <span>{item.title}</span>
                   <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                 </SidebarMenuButton>
@@ -54,11 +75,11 @@ export function NavMain({
               <CollapsibleContent>
                 <SidebarMenuSub>
                   {item.items?.map((subItem) => (
-                    <SidebarMenuSubItem key={subItem.title}>
+                    <SidebarMenuSubItem id="sidebarMenuSubItem" key={subItem.title}>
                       <SidebarMenuSubButton asChild>
-                        <a href={subItem.url}>
-                          <span>{subItem.title}</span>
-                        </a>
+                        <Link className={`${subItem.url === pathName && 'bg-primary'} rounded-md py-5 px-3 font-medium`} href={subItem.url}>
+                          {subItem.title}
+                        </Link>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                   ))}

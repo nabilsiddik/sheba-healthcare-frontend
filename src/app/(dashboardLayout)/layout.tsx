@@ -1,13 +1,15 @@
 import { AppSidebar } from "@/components/app-sidebar"
 import DashboardNavbar from "@/components/modules/dashboard/dashboardNavbar/DashboardNavbar"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import { getUserInfo } from "@/services/auth/getUserInfo"
+import { IUserInfo } from "@/types/user.types"
 
 const CommonDashboardLayout = async ({ children }: { children: React.ReactNode }) => {
-
+  const userInfo = await getUserInfo() as IUserInfo
   return (
     <SidebarProvider>
       {/* sidebar  */}
-      <AppSidebar />
+      <AppSidebar userInfo = {userInfo} />
       <SidebarInset>
         {/* daahsboard navbar  */}
         <DashboardNavbar/>
