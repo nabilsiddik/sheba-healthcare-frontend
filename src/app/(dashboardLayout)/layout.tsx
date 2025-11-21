@@ -14,7 +14,9 @@ const CommonDashboardLayout = async ({ children }: { children: React.ReactNode }
         {/* daahsboard navbar  */}
         <DashboardNavbar/>
         {/* main dynamic content  */}
-        {children}
+        <div className="p-10">
+          {children}
+        </div>
       </SidebarInset>
     </SidebarProvider>
   )

@@ -60,7 +60,7 @@ const data = {
         },
         {
           title: "Specialties",
-          url: "/admin/dashboard/specialties",
+          url: "/admin/dashboard/specialties-management",
           icon: <ListCheck/>
         },
       ],
