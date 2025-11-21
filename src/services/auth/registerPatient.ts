@@ -1,90 +1,61 @@
 'use server'
-import z from 'zod'
+import { serverFetch } from '@/lib/serverFetch';
 import { userLogin } from './userLogin';
+import { zodValidator } from '@/lib/zodVlidator';
+import { registerPatientValidationZodSchema } from '@/zod/auth.validation';
 
-const createPatientValidationSchema = z.object({
-    password: z.string().nonempty('Password is required'),
-    confirmPassword: z.string().nonempty('Confirm password is required'),
-    patient: z.object({
-        name: z.string().nonempty('Name is required').min(3, 'Name must be at least 3 characters'),
-        email: z.string().nonempty('Email is required'),
-        address: z.string().optional(),
-        gender: z.enum(['MALE', 'FEMALE', 'OTHERS'], {
-            error: 'Gender is required'
-        }),
-        profilePhoto: z.string().optional()
-    })
-}).refine(data => data.password === data.confirmPassword, {
-    message: 'password do not match',
-    path: ['confirmPassword']
-})
-
-export const registerPatient = async (_currentState: any, formData: any) => {
+export const registerPatient = async (_currentState: any, formData: any): Promise<any> => {
     try {
-
-        const patientData = {
+        const payload = {
+            name: formData.get("name"),
+            email: formData.get("email"),
             password: formData.get("password"),
             confirmPassword: formData.get("confirmPassword"),
-            patient: {
-                name: formData.get("name"),
-                email: formData.get("email"),
-                address: formData.get("address"),
-                gender: formData.get("gender"),
-            },
+            address: formData.get("address"),
+            gender: formData.get("gender"),
         };
-        const validated = createPatientValidationSchema.safeParse(patientData)
 
-        if (!validated.success) {
-            console.log(validated)
-            return {
-                success: false,
-                errors: validated.error.issues.map((issue) => {
-                    return {
-                        field: issue.path.join('.'),
-                        message: issue.message
-                    }
-                })
-            }
+        // Validate with zod
+        if (zodValidator(payload, registerPatientValidationZodSchema).success === false) {
+            return zodValidator(payload, registerPatientValidationZodSchema);
         }
 
-        const formatedPatientData = {
-            password: formData.get('password'),
+        const validatedPayload: any = zodValidator(payload, registerPatientValidationZodSchema).data;
+
+        const registerData = {
+            password: validatedPayload.password,
             patient: {
-                name: formData.get('name'),
-                email: formData.get('email'),
-                address: formData.get('address'),
-                gender: formData.get('gender')
+                name: validatedPayload.name,
+                email: validatedPayload.email,
+                address: validatedPayload.address,
+                gender: validatedPayload.gender
             }
         }
 
         const newFormData = new FormData()
-        newFormData.append('data', JSON.stringify(formatedPatientData))
+        newFormData.append('data', JSON.stringify(registerData))
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/user/create-patient`, {
-            method: 'POST',
+        if (formData.get('file')) {
+            newFormData.append('file', formData.get('file') as Blob)
+        }
+
+        const res = await serverFetch.post('/user/create-patient', {
             body: newFormData
         })
 
         const result = await res.json()
 
         if (result.success) {
-            try {
-                await userLogin(_currentState, formData)
-            } catch (err: any) {
-                if (err?.digest?.startsWith('NEXT_REDIRECT')) {
-                    throw err
-                }
-                console.log('Error during auto login redirect', err)
-            }
+            await userLogin(_currentState, formData);
         }
 
         return result
 
-    } catch (err: any) {
-        if (err?.digest?.startsWith('NEXT_REDIRECT')) {
-            throw err
+    } catch (error: any) {
+        if (error?.digest?.startsWith('NEXT_REDIRECT')) {
+            throw error
         }
-        console.log('Error while registering patient', err)
-        return { error: 'Registration failed' }
+        console.log('Error while registering patient', error)
+        return { success: false, message: `${process.env.NODE_ENV === 'development' ? error.message : "Registration Failed. Please try again."}` };
     }
 }

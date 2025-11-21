@@ -14,8 +14,8 @@ import Link from "next/link";
 import { useActionState, useEffect } from "react";
 import { registerPatient } from "@/services/auth/registerPatient";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
-import { getFieldError } from "@/utils/getFieldError"
 import { toast } from "sonner"
+import InputFieldError from "./shared/InputFieldError"
 
 export function SignupForm({
   className,
@@ -41,12 +41,14 @@ export function SignupForm({
         <Field>
           <FieldLabel htmlFor="name">Full Name</FieldLabel>
           <Input name="name" id="name" type="text" placeholder="Ex: Nabil Siddik" />
-
+          {/* 
           {getFieldError(state, 'patient.name') &&
             <FieldDescription className="text-red-600">
               {getFieldError(state, 'patient.name')}
             </FieldDescription>
-          }
+          } */}
+
+          <InputFieldError field="name" state={state} />
 
         </Field>
 
@@ -55,49 +57,40 @@ export function SignupForm({
           <FieldLabel htmlFor="email">Email</FieldLabel>
           <Input name="email" id="email" type="email" placeholder="example@gmail.com" />
 
-          {getFieldError(state, 'patient.email') &&
-            <FieldDescription className="text-red-600">
-              {getFieldError(state, 'patient.email')}
-            </FieldDescription>
-          }
+          <InputFieldError field="email" state={state} />
 
         </Field>
 
         {/* address field  */}
         <Field>
-          <FieldLabel htmlFor="address">Address</FieldLabel>
+          <FieldLabel htmlFor="address">Address (Optional)</FieldLabel>
           <Input name="address" id="address" type="text" placeholder="Ex: Gulshan, Dhaka 1212" />
+
+          <InputFieldError field="address" state={state} />
         </Field>
 
 
         {/* gender field */}
-        <Select name="gender">
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Gender" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="MALE">Male</SelectItem>
-            <SelectItem value="FEMALE">Female</SelectItem>
-            <SelectItem value="OTHERS">Others</SelectItem>
-          </SelectContent>
-
-          {getFieldError(state, 'patient.gender') &&
-            <FieldDescription className="text-red-600">
-              {getFieldError(state, 'patient.gender')}
-            </FieldDescription>
-          }
-        </Select>
+        <Field>
+          <Select name="gender">
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Gender" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="MALE">Male</SelectItem>
+              <SelectItem value="FEMALE">Female</SelectItem>
+              <SelectItem value="OTHERS">Others</SelectItem>
+            </SelectContent>
+          </Select>
+          <InputFieldError field="gender" state={state} />
+        </Field>
 
         {/* password field  */}
         <Field>
           <FieldLabel htmlFor="password">Password</FieldLabel>
           <Input name="password" id="password" type="password" placeholder="Type Secure password" />
 
-          {getFieldError(state, 'password') &&
-            <FieldDescription className="text-red-600">
-              {getFieldError(state, 'password')}
-            </FieldDescription>
-          }
+          <InputFieldError field="password" state={state} />
         </Field>
 
         {/* confirm password  */}
@@ -105,11 +98,7 @@ export function SignupForm({
           <FieldLabel htmlFor="confirmPassword">Confirm Password</FieldLabel>
           <Input name="confirmPassword" id="confirmPassword" type="password" placeholder="Confirm Password" />
 
-          {getFieldError(state, 'confirmPassword') &&
-            <FieldDescription className="text-red-600">
-              {getFieldError(state, 'confirmPassword')}
-            </FieldDescription>
-          }
+          <InputFieldError field="confirmPassword" state={state} />
         </Field>
 
 

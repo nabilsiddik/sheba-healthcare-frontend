@@ -13,27 +13,30 @@ import { FcGoogle } from "react-icons/fc";
 import Link from "next/link";
 import { useActionState, useEffect } from "react";
 import { userLogin } from "@/services/auth/userLogin";
-import { getFieldError } from "@/utils/getFieldError"
 import { toast } from "sonner"
+import { IInputErrorState } from "@/utils/getInputFieldError"
+import InputFieldError from "./shared/InputFieldError"
 
 export function LoginForm({
   className,
   redirect,
   ...props
-}: React.ComponentProps<"form"> & {redirect?: string}) {
+}: React.ComponentProps<"form"> & { redirect?: string }) {
 
   const [state, formAction, isPending] = useActionState(userLogin, null)
 
   useEffect(() => {
-    if(state && !state.success && state.message){
+    if (state && !state.success && state.message) {
       toast.error(state.message)
     }
   }, [state])
 
+  console.log(state, 'my state')
+
   return (
     <form noValidate action={formAction} className={cn("flex flex-col gap-6", className)} {...props}>
 
-      {redirect && <input type='hidden' name='redirect' value={redirect}/>}
+      {redirect && <input type='hidden' name='redirect' value={redirect} />}
 
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
@@ -43,24 +46,18 @@ export function LoginForm({
           <FieldLabel htmlFor="email">Email</FieldLabel>
           <Input name="email" id="email" type="text" placeholder="m@example.com" />
 
-          {getFieldError(state, 'email') && 
-            <FieldDescription className="text-red-600">
-              {getFieldError(state, 'email')}
-            </FieldDescription>
-          }
+          <InputFieldError field="email" state={state} />
         </Field>
         <Field>
           <FieldLabel htmlFor="password">Password</FieldLabel>
           <Input name="password" id="password" type="password" />
 
-          {getFieldError(state, 'password') && 
-            <FieldDescription className="text-red-600">
-              {getFieldError(state, 'password')}
-            </FieldDescription>
-          }
+          <InputFieldError field="password" state={state as IInputErrorState} />
         </Field>
         <Field>
-          <Button type="submit">Login</Button>
+          <Button type="submit" disabled={isPending}>
+            {isPending ? "Proccessing" : 'Login'}
+          </Button>
         </Field>
         <FieldSeparator>Or continue with</FieldSeparator>
         <Field>

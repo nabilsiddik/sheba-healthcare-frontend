@@ -1,51 +1,38 @@
 'use server'
 import z from 'zod'
-import cookie, { parse } from 'cookie'
-import { cookies } from 'next/headers'
+import { parse } from 'cookie'
 import { redirect } from 'next/navigation'
 import { JwtPayload } from 'jsonwebtoken'
 import jwt from 'jsonwebtoken'
-import { NextResponse } from 'next/server'
-import { request } from 'http'
 import { getDefaultDashboardRoute, isValidRedirectForRole, UserRole } from '@/utils/authUtils'
 import { setCookie } from '@/utils/tokenHandler'
+import { zodValidator } from '@/lib/zodVlidator'
+import { loginValidationZodSchema } from '@/zod/auth.validation'
 
-const userLoginZodSchema = z.object({
-    email: z.email('Email is required'),
-    password: z.string('Password is required').min(6, "Password minimum length is 6"),
-})
-
-export const userLogin = async (currentState: any, formData: any) => {
+export const userLogin = async (_currentState: any, formData: any): Promise<any> => {
     try {
         const redirectTo = formData.get('redirect') || null
         let accessTokenObj: null | any = null
         let refreshTokenObj: null | any = null
 
-        const userData = {
+        const payload = {
             email: formData.get('email'),
             password: formData.get('password')
         }
 
-        const validatedUserData = userLoginZodSchema.safeParse(userData)
-
-        if (!validatedUserData.success) {
-            return {
-                success: false,
-                errors: validatedUserData.error.issues.map((issue) => {
-                    return {
-                        field: issue.path[0],
-                        message: issue.message
-                    }
-                })
-            }
+        // Validate with zod
+        if (zodValidator(payload, loginValidationZodSchema).success === false) {
+            return zodValidator(payload, loginValidationZodSchema);
         }
+
+        const validatedPayload = zodValidator(payload, loginValidationZodSchema).data;
 
         const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/login`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(userData)
+            body: JSON.stringify(validatedPayload)
 
         })
 
@@ -106,7 +93,7 @@ export const userLogin = async (currentState: any, formData: any) => {
         const userRole: UserRole = verifiedToken.role
 
         if (!result.success) {
-            throw new Error( result?.message || 'Login failed')
+            throw new Error(result?.message || 'Login failed')
         }
 
 

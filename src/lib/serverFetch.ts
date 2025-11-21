@@ -18,7 +18,7 @@ export const serverFetchHelper = async (endPoint: string, options: RequestInit) 
 }
 
 export const serverFetch = {
-    get: async (endPoint: string, options: RequestInit) => serverFetchHelper(endPoint, {...options, method: 'GET'}),
+    get: async (endPoint: string, options?: RequestInit) => serverFetchHelper(endPoint, {...options, method: 'GET'}),
     
     post: async (endPoint: string, options: RequestInit) => serverFetchHelper(endPoint, {...options, method: 'POST'}),
 
@@ -26,6 +26,6 @@ export const serverFetch = {
 
     patch: async (endPoint: string, options: RequestInit) => serverFetchHelper(endPoint, {...options, method: 'PATCH'}),
 
-    delete: async (endPoint: string, options: RequestInit) => serverFetchHelper(endPoint, {...options, method: 'DELETE'})
+    delete: async (endPoint: string, options?: RequestInit) => serverFetchHelper(endPoint, {...options, method: 'DELETE'})
 
 }
