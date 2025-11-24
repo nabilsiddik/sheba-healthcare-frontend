@@ -56,7 +56,7 @@ const DoctorFormDialog = ({
     } else if (state && !state.success) {
       toast.error(state.message);
     }
-  }, [state, onSuccess, onClose]);
+  }, [state?.success, onSuccess, onClose]);
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -259,7 +259,7 @@ const DoctorFormDialog = ({
               <InputFieldError state={state} field="qualification" />
             </Field>
 
-            <Field>
+            {/* <Field>
               <FieldLabel htmlFor="currentWorkingPlace">
                 Current Working Place
               </FieldLabel>
@@ -270,7 +270,7 @@ const DoctorFormDialog = ({
                 defaultValue={isEdit ? doctor?.currentWorkingPlace : undefined}
               />
               <InputFieldError state={state} field="currentWorkingPlace" />
-            </Field>
+            </Field> */}
 
             <Field>
               <FieldLabel htmlFor="designation">Designation</FieldLabel>

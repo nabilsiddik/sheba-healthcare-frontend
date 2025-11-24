@@ -18,7 +18,7 @@ export async function createDoctor(_prevState: any, formData: FormData) {
             gender: formData.get("gender") as "MALE" | "FEMALE",
             appointmentFee: Number(formData.get("appointmentFee") as string),
             qualification: formData.get("qualification") as string,
-            currentWorkingPlace: formData.get("currentWorkingPlace") as string,
+            // currentWorkingPlace: formData.get("currentWorkingPlace") as string,
             designation: formData.get("designation") as string,
             password: formData.get("password") as string,
         }
@@ -44,7 +44,7 @@ export async function createDoctor(_prevState: any, formData: FormData) {
                 gender: validatedPayload.gender,
                 appointmentFee: validatedPayload.appointmentFee,
                 qualification: validatedPayload.qualification,
-                currentWorkingPlace: validatedPayload.currentWorkingPlace,
+                // currentWorkingPlace: validatedPayload.currentWorkingPlace,
                 designation: validatedPayload.designation,
             }
         }
@@ -109,7 +109,7 @@ export async function updateDoctor(id: string, _prevState: any, formData: FormDa
             gender: formData.get("gender") as "MALE" | "FEMALE",
             appointmentFee: Number(formData.get("appointmentFee") as string),
             qualification: formData.get("qualification") as string,
-            currentWorkingPlace: formData.get("currentWorkingPlace") as string,
+            // currentWorkingPlace: formData.get("currentWorkingPlace") as string,
             designation: formData.get("designation") as string,
         }
         const validatedPayload = zodValidator(payload, updateDoctorZodSchema).data;

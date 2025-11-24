@@ -10,7 +10,7 @@ export interface IDoctor {
     gender: "MALE" | "FEMALE";
     appointmentFee: number;
     qualification: string;
-    currentWorkingPlace: string;
+    // currentWorkingPlace: string;
     designation: string;
     profilePhoto?: string;
     isDeleted?: boolean;
